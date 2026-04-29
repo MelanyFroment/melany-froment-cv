@@ -315,16 +315,19 @@
               <span class="mt-1 block text-cream">La Réunion</span>
             </p>
           </div>
-          <form class="glass rounded-2xl p-6 md:p-8" id="contact-form" action="#" method="post">
-            <!-- action="#" : à remplacer par votre endpoint (Formspree, backend, etc.) -->
+          <form
+            class="glass rounded-2xl p-6 md:p-8"
+            id="contact-form"
+            action="https://formspree.io/f/xzdynwoa"
+            method="POST"
+          >
             <div class="space-y-4">
               <div>
-                <label for="name" class="mb-1 block text-xs uppercase tracking-[0.15em] text-creamMuted">Nom</label>
+                <label for="nom" class="mb-1 block text-xs uppercase tracking-[0.15em] text-creamMuted">Nom</label>
                 <input
-                  id="name"
-                  name="name"
+                  id="nom"
+                  name="nom"
                   type="text"
-                  required
                   autocomplete="name"
                   class="form-input"
                   placeholder="Votre nom"
@@ -340,6 +343,16 @@
                   autocomplete="email"
                   class="form-input"
                   placeholder="vous@exemple.com"
+                />
+              </div>
+              <div>
+                <label for="objet" class="mb-1 block text-xs uppercase tracking-[0.15em] text-creamMuted">Objet</label>
+                <input
+                  id="objet"
+                  name="objet"
+                  type="text"
+                  class="form-input"
+                  placeholder="Sujet de votre message"
                 />
               </div>
               <div>

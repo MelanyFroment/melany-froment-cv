@@ -13,8 +13,6 @@
 
   var HEADER = document.getElementById("site-header");
   var YEAR = document.getElementById("year");
-  var FORM = document.getElementById("contact-form");
-  var FORM_STATUS = document.getElementById("form-status");
   var NAV_TOGGLE = document.getElementById("nav-toggle");
   var NAV_OVERLAY = document.getElementById("nav-overlay");
   var NAV_OVERLAY_CLOSE = document.getElementById("nav-overlay-close");
@@ -117,16 +115,6 @@
     });
   }
 
-  /** Formulaire démo */
-  function onFormSubmit(e) {
-    e.preventDefault();
-    if (!FORM_STATUS || !FORM) return;
-    FORM_STATUS.classList.remove("hidden");
-    FORM_STATUS.textContent =
-      "Merci pour votre message. Pour l'instant ce formulaire est une démo : branchez une action serveur ou un service comme Formspree sur l'attribut action du formulaire.";
-    FORM_STATUS.style.color = "rgba(247, 243, 236, 0.75)";
-  }
-
   /** Fermeture du menu lors du passage en vue desktop */
   function onViewportResize() {
     if (window.innerWidth >= LG_BREAKPOINT && isMobileNavOpen()) {
@@ -175,10 +163,6 @@
   initReveal();
   initSmoothAnchors();
   initMobileNav();
-
-  if (FORM) {
-    FORM.addEventListener("submit", onFormSubmit);
-  }
 
   var style = document.createElement("style");
   style.textContent =
