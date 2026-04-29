@@ -1,0 +1,149 @@
+/**
+ * Styles complémentaires au thème Tailwind.
+ * Glassmorphism, badges, champs de formulaire et animation reveal.
+ */
+
+/* Ancres : décalage pour la barre fixe + notch (safe-area) */
+html {
+  scroll-padding-top: 6rem;
+}
+
+@media (min-width: 1024px) {
+  html {
+    scroll-padding-top: 6.25rem;
+  }
+}
+
+/* Espacement sous la navbar fixe : évite tout chevauchement au chargement (mobile / encoche) */
+#hero.hero-section {
+  padding-top: calc(6.5rem + env(safe-area-inset-top, 0px));
+}
+
+@media (min-width: 768px) {
+  #hero.hero-section {
+    padding-top: calc(7rem + env(safe-area-inset-top, 0px));
+  }
+}
+
+/* Burger → icône fermer lorsque le menu plein écran est ouvert */
+.burger-line {
+  transition:
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .burger-line {
+    transition: none;
+  }
+}
+
+body.nav-open .burger-line-top {
+  transform: translateY(7px) rotate(45deg);
+}
+
+body.nav-open .burger-line-mid {
+  opacity: 0;
+}
+
+body.nav-open .burger-line-bot {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Cartes type verre dépoli */
+.glass {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.experience-card {
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.experience-card:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Badges compétences / loisirs */
+.skill-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  color: rgba(247, 243, 236, 0.92);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.skill-badge:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* Champs formulaire cohérents avec le thème sombre */
+.form-input {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.925rem;
+  font-weight: 300;
+  color: #f7f3ec;
+  background: rgba(26, 37, 51, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.75rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input::placeholder {
+  color: rgba(247, 243, 236, 0.35);
+}
+
+.form-input:focus {
+  border-color: rgba(247, 243, 236, 0.35);
+  box-shadow: 0 0 0 1px rgba(247, 243, 236, 0.12);
+}
+
+/* État initial : invisible, légèrement décalé vers le bas */
+.reveal {
+  opacity: 0;
+  transform: translateY(1.75rem);
+  transition:
+    opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Délais échelonnés pour les enfants directs du hero (effet cascade) */
+#hero .reveal:nth-child(1) {
+  transition-delay: 0s;
+}
+#hero .reveal:nth-child(2) {
+  transition-delay: 0.08s;
+}
+#hero .reveal:nth-child(3) {
+  transition-delay: 0.16s;
+}
+#hero .reveal:nth-child(4) {
+  transition-delay: 0.24s;
+}
+
+/* Réduction des animations si l'utilisateur le demande */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
