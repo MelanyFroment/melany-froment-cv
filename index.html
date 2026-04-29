@@ -76,7 +76,7 @@
       class="fixed top-0 left-0 z-50 w-full border-b border-white/[0.08] bg-[#1a2533]/95 backdrop-blur-md transition-[box-shadow,border-color,background-color] duration-300"
     >
       <nav
-        class="mx-auto flex w-full max-w-[1440px] items-center justify-between gap-4 px-4 py-4 md:px-8 lg:px-10 xl:px-12"
+        class="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8"
         aria-label="Navigation principale"
       >
         <a href="#hero" class="font-script text-xl tracking-wide text-cream hover:opacity-90 sm:text-2xl lg:text-3xl">
@@ -87,7 +87,7 @@
         <ul
           class="hidden flex-wrap items-center justify-end gap-4 text-xs uppercase tracking-[0.2em] text-creamMuted lg:flex lg:gap-6 lg:text-[0.7rem]"
         >
-          <li><a class="nav-link hover:text-cream" href="#services">Servicessss</a></li>
+          <li><a class="nav-link hover:text-cream" href="#services">Services</a></li>
           <li><a class="nav-link hover:text-cream" href="#experience">Expérience</a></li>
           <li><a class="nav-link hover:text-cream" href="#formation">Formation</a></li>
           <li><a class="nav-link hover:text-cream" href="#competences">Compétences</a></li>
@@ -123,7 +123,7 @@
       aria-hidden="true"
     >
       <div
-        class="relative mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 flex-col justify-center px-6 pb-12 pt-20 md:px-10 md:pb-16"
+        class="relative mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col justify-center px-4 pb-12 pt-20 sm:px-6 md:pb-16 lg:px-8"
       >
         <ul class="flex flex-col gap-8 text-center text-sm uppercase tracking-[0.35em] text-creamMuted">
           <li>
@@ -157,13 +157,15 @@
       </div>
     </div>
 
+    <!-- Contenu centré : max-w-7xl + gouttières. Pour un fond différent sur toute la largeur, fermer ce bloc avant la section et utiliser .section-full-bleed + conteneur interne (voir styles.css). -->
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
     <main class="relative z-0">
       <!-- Hero : colonne unique, typographie évolutive -->
       <section
         id="hero"
-        class="reveal hero-section relative flex min-h-[100svh] w-full flex-col items-center justify-center px-4 pb-24 text-center sm:px-6 md:px-8 lg:px-10 xl:px-12"
+        class="reveal hero-section relative flex min-h-[100svh] w-full flex-col items-center justify-center pb-24 text-center"
       >
-        <div class="w-full max-w-[1440px] mx-auto flex flex-col items-center">
+        <div class="w-full flex flex-col items-center">
           <p class="reveal mb-4 text-[0.65rem] uppercase tracking-[0.35em] text-creamMuted sm:text-xs">
             Création de site internet
           </p>
@@ -173,8 +175,7 @@
             Mélany Froment
           </h1>
         <p class="reveal mt-6 w-full max-w-xl px-1 text-sm font-extralight leading-relaxed text-creamMuted sm:text-base md:text-lg lg:max-w-2xl">
-          Conceptrice développeuse d'applications — je conçois des expériences web sobres, soignées et adaptées à votre
-          identité.
+          Conceptrice développeuse d'applications — L'art de transformer vos idées en expériences web fluides, élégantes et parfaitement adaptées!
         </p>
         <a
           href="#contact"
@@ -188,13 +189,11 @@
 
       <!-- Mes services : 1 col → md: 2 col → lg: 3 col -->
       <section id="services" class="reveal w-full py-16 md:py-20">
-        <div class="mx-auto w-full max-w-[1440px] px-4 md:px-8 lg:px-10 xl:px-12">
-          <div class="glass rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12">
+        <div class="glass rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12">
           <h2 class="text-xs uppercase tracking-[0.3em] text-creamMuted">Offre</h2>
           <p class="mt-3 font-script text-3xl text-cream sm:text-4xl lg:text-5xl">Mes services</p>
           <p class="mt-6 max-w-2xl text-creamMuted">
-            Mise en avant de la <strong class="font-normal text-cream">création de sites internet personnalisés</strong> :
-            un accompagnement sur mesure, du cadrage à la mise en ligne.
+            Création web sur mesure : de la stratégie technique au lancement, bénéficiez d'un <strong class="font-normal text-cream">accompagnement dédié pour un site qui vous ressemble</strong>!
           </p>
           <ul class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             <li class="rounded-2xl border border-white/10 bg-night/40 p-5 md:p-6">
@@ -215,24 +214,25 @@
               <p class="mt-2 text-sm text-creamMuted">Chaque projet est unique : prestation proposée uniquement sur devis, après échange sur vos objectifs.</p>
             </li>
           </ul>
-          </div>
         </div>
       </section>
 
       <!-- Expériences : grille 1 → md: 2 colonnes -->
       <section id="experience" class="reveal w-full py-12 md:py-16">
-        <div class="mx-auto w-full max-w-[1440px] px-4 md:px-8 lg:px-10 xl:px-12">
         <h2 class="text-xs uppercase tracking-[0.3em] text-creamMuted">Parcours</h2>
         <p class="mt-3 font-script text-3xl text-cream sm:text-4xl md:text-[2.65rem] lg:text-5xl">Expérience</p>
         <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8 lg:mt-12">
-          <article class="glass experience-card rounded-2xl p-6 md:p-8">
-            <div class="flex flex-col gap-2 md:flex-row md:items-baseline md:justify-between">
-              <h3 class="text-lg font-normal text-cream">Monoprix</h3>
-              <span class="text-xs uppercase tracking-[0.2em] text-creamMuted">2025 — 2026</span>
+          <article class="glass experience-card experience-card--current relative rounded-2xl p-6 md:p-8">
+            <p class="experience-card-badge">Actuel</p>
+            <div class="flex flex-col gap-2 pr-[5.5rem] md:flex-row md:items-baseline md:justify-between md:gap-6 md:pr-[5.5rem]">
+              <h3 class="text-lg font-normal text-cream md:min-w-0 md:flex-1 md:pr-2">
+                Mélany Froment — Conceptrice Développeuse Freelance
+              </h3>
+              <span class="shrink-0 text-xs uppercase tracking-[0.2em] text-creamMuted">2025 — Présent</span>
             </div>
             <p class="mt-4 text-sm leading-relaxed text-creamMuted">
-              Mise en rayon textile, parfumerie et maquillage : merchandising, réassort des collections, suivi des
-              stocks, conseil client et attractivité des rayons.
+              Conception et développement de solutions web sur mesure, accompagnement technique et création d'applications
+              adaptées aux besoins clients.
             </p>
           </article>
           <article class="glass experience-card rounded-2xl p-6 md:p-8">
@@ -241,7 +241,7 @@
               <span class="text-xs uppercase tracking-[0.2em] text-creamMuted">2023 — 2025</span>
             </div>
             <p class="mt-4 text-sm leading-relaxed text-creamMuted">
-              Polyvalence sur des missions techniques, gestion des tâches, respect des délais et travail en autonomie.
+              Polyvalence sur des missions techniques, gestion des tâches et travail en autonomie.
             </p>
           </article>
           <article class="glass experience-card rounded-2xl p-6 md:p-8">
@@ -263,12 +263,10 @@
             </p>
           </article>
         </div>
-        </div>
       </section>
 
       <!-- Formation -->
       <section id="formation" class="reveal w-full py-12 md:py-16">
-        <div class="mx-auto w-full max-w-[1440px] px-4 md:px-8 lg:px-10 xl:px-12">
         <h2 class="text-xs uppercase tracking-[0.3em] text-creamMuted">Diplômes</h2>
         <p class="mt-3 font-script text-3xl text-cream sm:text-4xl md:text-[2.65rem] lg:text-5xl">Formation</p>
         <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -283,38 +281,119 @@
             <p class="mt-1 text-sm text-creamMuted">Option SLAM — Solutions logicielles et applications métier</p>
           </article>
         </div>
-        </div>
       </section>
 
-      <!-- Compétences & loisirs : jusqu'à 3 colonnes sur grand écran -->
+      <!-- Compétences (grille par stack) & loisirs (icônes SVG) -->
       <section id="competences" class="reveal w-full py-12 md:py-16">
-        <div class="mx-auto w-full max-w-[1440px] px-4 md:px-8 lg:px-10 xl:px-12">
         <h2 class="text-xs uppercase tracking-[0.3em] text-creamMuted">Savoir-faire & passions</h2>
         <p class="mt-3 font-script text-3xl text-cream sm:text-4xl md:text-[2.65rem] lg:text-5xl">Compétences & loisirs</p>
         <div class="mt-10">
-          <p class="mb-4 text-sm text-creamMuted">Compétences</p>
-          <div class="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:gap-4">
-            <span class="skill-badge">Polyvalence</span>
-            <span class="skill-badge">Relation client</span>
-            <span class="skill-badge">Organisation</span>
-            <span class="skill-badge">Travail d'équipe</span>
-            <span class="skill-badge">Gestion du rush</span>
+          <p class="mb-5 text-xs uppercase tracking-[0.25em] text-cream/60">Stack technique</p>
+          <div class="grid grid-cols-1 gap-5 sm:gap-6 md:grid-cols-2 xl:grid-cols-4">
+            <!-- Front-end -->
+            <article class="glass rounded-2xl p-5 md:p-6">
+              <h3 class="mb-4 border-l-2 border-sky-400 pl-3 text-xs font-medium uppercase tracking-[0.2em] text-sky-300/95">
+                Front-end
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                <span class="tech-badge tech-badge--front">HTML5</span>
+                <span class="tech-badge tech-badge--front">CSS3</span>
+                <span class="tech-badge tech-badge--front">JavaScript</span>
+                <span class="tech-badge tech-badge--front">TypeScript</span>
+                <span class="tech-badge tech-badge--front">React</span>
+                <span class="tech-badge tech-badge--front">Tailwind CSS</span>
+              </div>
+            </article>
+            <!-- Back-end -->
+            <article class="glass rounded-2xl p-5 md:p-6">
+              <h3 class="mb-4 border-l-2 border-emerald-400 pl-3 text-xs font-medium uppercase tracking-[0.2em] text-emerald-300/95">
+                Back-end
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                <span class="tech-badge tech-badge--back">NestJS</span>
+                <span class="tech-badge tech-badge--back">Django</span>
+                <span class="tech-badge tech-badge--back">Symfony</span>
+              </div>
+            </article>
+            <!-- Databases -->
+            <article class="glass rounded-2xl p-5 md:p-6">
+              <h3 class="mb-4 border-l-2 border-amber-400 pl-3 text-xs font-medium uppercase tracking-[0.2em] text-amber-200/95">
+                Databases
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                <span class="tech-badge tech-badge--db">MySQL</span>
+                <span class="tech-badge tech-badge--db">PostgreSQL</span>
+                <span class="tech-badge tech-badge--db">MongoDB</span>
+              </div>
+            </article>
+            <!-- Outils -->
+            <article class="glass rounded-2xl p-5 md:p-6">
+              <h3 class="mb-4 border-l-2 border-violet-400 pl-3 text-xs font-medium uppercase tracking-[0.2em] text-violet-300/95">
+                Outils
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                <span class="tech-badge tech-badge--tools">GitHub</span>
+                <span class="tech-badge tech-badge--tools">Git</span>
+                <span class="tech-badge tech-badge--tools">Figma</span>
+                <span class="tech-badge tech-badge--tools">Docker</span>
+              </div>
+            </article>
           </div>
         </div>
-        <div class="mt-10">
-          <p class="mb-4 text-sm text-creamMuted">Loisirs</p>
-          <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:gap-4">
-            <span class="skill-badge">Escalade</span>
-            <span class="skill-badge">Randonnée</span>
-            <span class="skill-badge">Ski</span>
+
+        <div class="mt-12 md:mt-14">
+          <p class="mb-5 text-xs uppercase tracking-[0.25em] text-cream/60">Loisirs</p>
+          <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+            <div class="glass hobby-tile rounded-2xl" title="Escalade">
+              <svg class="h-11 w-11 text-cream" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M5 3v18" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" />
+                <circle cx="8" cy="7" r="1.1" fill="currentColor" opacity="0.85" />
+                <circle cx="7" cy="13" r="1.1" fill="currentColor" opacity="0.85" />
+                <circle cx="9" cy="18" r="1.1" fill="currentColor" opacity="0.85" />
+                <path
+                  d="M14 6l-1 4 2 3-3 4 2 7M13 10h4M12 14l4-1"
+                  stroke="currentColor"
+                  stroke-width="1.35"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span class="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-creamMuted">Escalade</span>
+            </div>
+            <div class="glass hobby-tile rounded-2xl" title="Randonnée">
+              <svg class="h-11 w-11 text-cream" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M3 18l6-6 4 4 5-8 3 4" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M2 20h20M12 4l2 3h-4l2-3z" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <span class="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-creamMuted">Randonnée</span>
+            </div>
+            <div class="glass hobby-tile rounded-2xl" title="Ski">
+              <svg class="h-11 w-11 text-cream" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M4 16c4-1 9-2 14 1" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" />
+                <path d="M8 20l10-11 2 4-9 7" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M17 5l1 3-2 1" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <span class="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-creamMuted">Ski</span>
+            </div>
+            <div class="glass hobby-tile rounded-2xl" title="Course à pied">
+              <svg class="h-11 w-11 text-cream" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="14" cy="5" r="2" stroke="currentColor" stroke-width="1.35" />
+                <path
+                  d="M11 21l2-4 1-7-3 2-2-2M14 10l4 2 2 5M8 21h8"
+                  stroke="currentColor"
+                  stroke-width="1.35"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span class="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-creamMuted">Course à pied</span>
+            </div>
           </div>
-        </div>
         </div>
       </section>
 
       <!-- Contact -->
       <section id="contact" class="reveal w-full py-16 pb-28 md:py-20 md:pb-32">
-        <div class="mx-auto w-full max-w-[1440px] px-4 md:px-8 lg:px-10 xl:px-12">
         <h2 class="text-xs uppercase tracking-[0.3em] text-creamMuted">Échangeons</h2>
         <p class="mt-3 font-script text-3xl text-cream sm:text-4xl md:text-[2.65rem] lg:text-5xl">Contact</p>
         <div class="mt-10 grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-12 lg:gap-14">
@@ -395,15 +474,13 @@
             <p id="form-status" class="mt-4 hidden text-center text-sm" role="status" aria-live="polite"></p>
           </form>
         </div>
-        </div>
       </section>
     </main>
 
     <footer class="border-t border-white/10 py-8 text-center text-xs text-creamMuted">
-      <div class="mx-auto w-full max-w-[1440px] px-4 md:px-8 lg:px-10 xl:px-12">
-        <p>© <span id="year"></span> Mélany Froment — Tous droits réservés.</p>
-      </div>
+      <p>© <span id="year"></span> Mélany Froment — Tous droits réservés.</p>
     </footer>
+    </div>
 
     <script src="js/main.js"></script>
   </body>

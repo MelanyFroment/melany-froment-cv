@@ -3,6 +3,13 @@
  * Glassmorphism, badges, champs de formulaire et animation reveal.
  */
 
+/* Bandeau fond pleine largeur (sortir du max-w-7xl) : sur la <section>, puis contenu dans un enfant max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 */
+.section-full-bleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+
 /* Ancres : décalage pour la barre fixe + notch (safe-area) */
 html {
   scroll-padding-top: 6rem;
@@ -68,6 +75,44 @@ body.nav-open .burger-line-bot {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
 }
 
+/* Carte expérience en cours (micro-entreprise / freelance) */
+.experience-card--current {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(247, 243, 236, 0.06);
+}
+
+.experience-card--current:hover {
+  border-color: rgba(247, 243, 236, 0.22);
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.22);
+}
+
+.experience-card-badge {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 1;
+  margin: 0;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(247, 243, 236, 0.95);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(247, 243, 236, 0.22);
+  border-radius: 9999px;
+  line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+  .experience-card-badge {
+    top: 1.5rem;
+    right: 1.75rem;
+  }
+}
+
 /* Badges compétences / loisirs */
 .skill-badge {
   display: inline-flex;
@@ -86,6 +131,103 @@ body.nav-open .burger-line-bot {
 .skill-badge:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* Badges stack technique (bordure sémantique : front / back / data / outils) */
+.tech-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(247, 243, 236, 0.94);
+  background: rgba(255, 255, 255, 0.035);
+  border-radius: 9999px;
+  border-width: 1px;
+  border-style: solid;
+  transition:
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.22s ease,
+    background-color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.tech-badge:hover {
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.tech-badge--front {
+  border-color: rgba(56, 189, 248, 0.45);
+  box-shadow: 0 0 0 0 rgba(56, 189, 248, 0);
+}
+.tech-badge--front:hover {
+  border-color: rgba(56, 189, 248, 0.95);
+  box-shadow: 0 0 20px -8px rgba(56, 189, 248, 0.45);
+}
+
+.tech-badge--back {
+  border-color: rgba(52, 211, 153, 0.45);
+}
+.tech-badge--back:hover {
+  border-color: rgba(52, 211, 153, 0.95);
+  box-shadow: 0 0 20px -8px rgba(52, 211, 153, 0.4);
+}
+
+.tech-badge--db {
+  border-color: rgba(251, 191, 36, 0.5);
+}
+.tech-badge--db:hover {
+  border-color: rgba(252, 211, 77, 0.95);
+  box-shadow: 0 0 20px -8px rgba(251, 191, 36, 0.35);
+}
+
+.tech-badge--tools {
+  border-color: rgba(167, 139, 250, 0.45);
+}
+.tech-badge--tools:hover {
+  border-color: rgba(196, 181, 253, 0.95);
+  box-shadow: 0 0 20px -8px rgba(167, 139, 250, 0.4);
+}
+
+/* Tuiles loisirs (icônes SVG inline) */
+.hobby-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  transition:
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.hobby-tile:hover {
+  transform: scale(1.05);
+  border-color: rgba(247, 243, 236, 0.16);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.22);
+}
+
+.hobby-tile svg {
+  flex-shrink: 0;
+  opacity: 0.92;
+  transition: opacity 0.22s ease;
+}
+
+.hobby-tile:hover svg {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tech-badge:hover,
+  .hobby-tile:hover {
+    transform: none;
+  }
 }
 
 /* Champs formulaire cohérents avec le thème sombre */
