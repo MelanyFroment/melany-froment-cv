@@ -89,6 +89,7 @@
         >
           <li><a class="nav-link hover:text-cream" href="#services">Services</a></li>
           <li><a class="nav-link hover:text-cream" href="#experience">Expérience</a></li>
+          <li><a class="nav-link hover:text-cream" href="#portfolio">Portfolio</a></li>
           <li><a class="nav-link hover:text-cream" href="#formation">Formation</a></li>
           <li><a class="nav-link hover:text-cream" href="#competences">Compétences</a></li>
           <li>
@@ -131,6 +132,9 @@
           </li>
           <li>
             <a class="mobile-nav-link block py-2 text-lg text-cream transition hover:text-creamMuted/90" href="#experience">Expérience</a>
+          </li>
+          <li>
+            <a class="mobile-nav-link block py-2 text-lg text-cream transition hover:text-creamMuted/90" href="#portfolio">Portfolio</a>
           </li>
           <li>
             <a class="mobile-nav-link block py-2 text-lg text-cream transition hover:text-creamMuted/90" href="#formation">Formation</a>
@@ -262,6 +266,221 @@
               Production rigoureuse de sites, respect des consignes client et fort sens du détail.
             </p>
           </article>
+        </div>
+      </section>
+
+      <!-- Portfolio : vidéos 16:9 en lecture continue ; léger zoom au survol -->
+      <section id="portfolio" class="w-full py-12 md:py-16" aria-labelledby="portfolio-heading">
+        <div class="reveal">
+          <h2 class="text-xs uppercase tracking-[0.3em] text-creamMuted">Réalisations</h2>
+          <p id="portfolio-heading" class="mt-3 font-script text-3xl text-cream sm:text-4xl md:text-[2.65rem] lg:text-5xl">
+            Portfolio
+          </p>
+        </div>
+
+        <div class="portfolio-grid mx-auto mt-10 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 lg:mt-12">
+          <article
+            tabindex="0"
+            class="portfolio-card reveal group relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.1] bg-white/[0.04] shadow-[0_6px_28px_rgba(0,0,0,0.18)] backdrop-blur-xl outline-none transition-[box-shadow,border-color,transform] duration-300 ease-out focus-visible:ring-2 focus-visible:ring-cream/40 focus-visible:ring-offset-2 focus-visible:ring-offset-night md:hover:-translate-y-[2px] md:hover:border-white/[0.14] md:hover:shadow-[0_20px_46px_-8px_rgba(0,0,0,0.38)]"
+          >
+            <div class="portfolio-card-media relative aspect-video w-full shrink-0 overflow-hidden bg-black">
+              <video
+                class="portfolio-card-video absolute inset-0 h-full w-full origin-center object-cover object-center opacity-100 transition-transform duration-500 group-hover:scale-105"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                aria-label="Démonstration vidéo ATECMI"
+              >
+                <source src="videos/atecmi_demo.mp4" type="video/mp4" />
+              </video>
+            </div>
+            <div class="flex flex-1 flex-col gap-3 border-t border-white/[0.08] px-4 py-5 md:px-5 md:py-6">
+              <h3 class="text-base font-normal leading-snug text-cream md:text-lg">
+                ATECMI – Solutions de Conditionnement Industriel
+              </h3>
+              <p class="text-[0.8125rem] font-light leading-relaxed text-creamMuted md:text-[0.875rem]">
+                Refonte intégrale de la plateforme digitale pour un concepteur de lignes de conditionnement. L'objectif était
+                de transformer un catalogue technique dense et complexe en une interface fluide, intuitive et résolument
+                moderne. Le site a été conçu pour répondre aux exigences de précision du secteur industriel B2B, mettant en
+                valeur l'expertise en robotisation et en maintenance.
+              </p>
+              <div class="mt-auto flex flex-wrap gap-2 pt-1">
+                <span class="tech-badge tech-badge--back">Django</span>
+                <span class="tech-badge tech-badge--front">JavaScript</span>
+                <span class="tech-badge tech-badge--front">HTML5 / CSS3</span>
+                <span class="tech-badge tech-badge--design">Tailwind CSS</span>
+                <span class="tech-badge tech-badge--tool">GitHub</span>
+                <span class="tech-badge tech-badge--opti">Optimisation Performance</span>
+              </div>
+            </div>
+          </article>
+
+          <article
+            tabindex="0"
+            class="portfolio-card reveal group relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.1] bg-white/[0.04] shadow-[0_6px_28px_rgba(0,0,0,0.18)] backdrop-blur-xl outline-none transition-[box-shadow,border-color,transform] duration-300 ease-out focus-visible:ring-2 focus-visible:ring-cream/40 focus-visible:ring-offset-2 focus-visible:ring-offset-night md:hover:-translate-y-[2px] md:hover:border-white/[0.14] md:hover:shadow-[0_20px_46px_-8px_rgba(0,0,0,0.38)]"
+          >
+            <div class="portfolio-card-media relative aspect-video w-full shrink-0 overflow-hidden bg-black">
+              <video
+                class="portfolio-card-video absolute inset-0 h-full w-full origin-center object-cover object-center opacity-100 transition-transform duration-500 group-hover:scale-105"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                aria-label="Démonstration vidéo restauration"
+              >
+                <source src="videos/template_luxury.mp4" type="video/mp4" />
+              </video>
+            </div>
+            <div class="flex flex-1 flex-col gap-3 border-t border-white/[0.08] px-4 py-5 md:px-5 md:py-6">
+              <h3 class="text-base font-normal leading-snug text-cream md:text-lg">
+                Site Web Immersif & Multipage pour Restauration Premium
+              </h3>
+              <p class="text-[0.8125rem] font-light leading-relaxed text-creamMuted md:text-[0.875rem]">
+                Conception et développement d'un template vitrine multipage haut de gamme, pensé pour les restaurants et structures touristiques cherchant une identité visuelle forte et cinématique. Le site intègre une expérience narrative forte (storytelling), une vitrine dynamique des menus et un système complet de réservation de tables en ligne directement connecté à un espace de gestion client. Un sélecteur de thème permet de basculer instantanément d'une ambiance lumineuse à un mode sombre intimiste.
+              </p>
+              <div class="mt-auto flex flex-wrap gap-2 pt-1">
+                <span class="tech-badge tech-badge--back">Django</span>
+                <span class="tech-badge tech-badge--front">HTML5 / CSS3</span>
+                <span class="tech-badge tech-badge--front">Tailwind CSS</span>
+                <span class="tech-badge tech-badge--front">JavaScript</span>
+                <span class="tech-badge tech-badge--front">Alpine.js</span>
+                <span class="tech-badge tech-badge--opti">Responsive Design</span>
+                <span class="tech-badge tech-badge--opti">PostgreSQL</span>
+                <span class="tech-badge tech-badge--opti">Mobile-First</span>
+              </div>
+            </div>
+          </article>
+
+          <article
+            tabindex="0"
+            class="portfolio-card reveal group relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.1] bg-white/[0.04] shadow-[0_6px_28px_rgba(0,0,0,0.18)] backdrop-blur-xl outline-none transition-[box-shadow,border-color,transform] duration-300 ease-out focus-visible:ring-2 focus-visible:ring-cream/40 focus-visible:ring-offset-2 focus-visible:ring-offset-night md:hover:-translate-y-[2px] md:hover:border-white/[0.14] md:hover:shadow-[0_20px_46px_-8px_rgba(0,0,0,0.38)]"
+          >
+            <div class="portfolio-card-media relative aspect-video w-full shrink-0 overflow-hidden bg-black">
+              <video
+                class="portfolio-card-video absolute inset-0 h-full w-full origin-center object-cover object-center opacity-100 transition-transform duration-500 group-hover:scale-105"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                aria-label="Démonstration vidéo commande snack"
+              >
+                <source src="videos/template_snack.mp4" type="video/mp4" />
+              </video>
+            </div>
+            <div class="flex flex-1 flex-col gap-3 border-t border-white/[0.08] px-4 py-5 md:px-5 md:py-6">
+              <h3 class="text-base font-normal leading-snug text-cream md:text-lg">Landing Page Ultra-Dynamique & Vendeuse</h3>
+              <p class="text-[0.8125rem] font-light leading-relaxed text-creamMuted md:text-[0.875rem]">
+                Création d'un template monopage (One-Page) à fort impact visuel, inspiré des tendances graphiques urbaines et du style néo-brutaliste. Conçu spécifiquement pour les commerces à forte rotation (snacks, pizzerias, camions-bars), ce site va droit au but sur mobile : affichage immédiat de l'état d'ouverture en temps réel, menu fluide avec filtres instantanés sans rechargement de page, et tunnels de conversion ultra-courts vers l'appel direct ou la commande par messagerie.
+              </p>
+              <div class="mt-auto flex flex-wrap gap-2 pt-1">
+                <span class="tech-badge tech-badge--back">Django</span>
+                <span class="tech-badge tech-badge--front">HTML5</span>
+                <span class="tech-badge tech-badge--front">Tailwind CSS</span>
+                <span class="tech-badge tech-badge--design">Flexbox</span>
+                <span class="tech-badge tech-badge--opti">PostgreSQL</span>
+                <span class="tech-badge tech-badge--opti">Intégration API WhatsApp</span>
+                <span class="tech-badge tech-badge--opti">Lightbox Galerie dynamique</span>
+                <span class="tech-badge tech-badge--opti">Mobile-First</span>
+              </div>
+            </div>
+          </article> 
+
+          <!-- <article
+            tabindex="0"
+            class="portfolio-card reveal group relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.1] bg-white/[0.04] shadow-[0_6px_28px_rgba(0,0,0,0.18)] backdrop-blur-xl outline-none transition-[box-shadow,border-color,transform] duration-300 ease-out focus-visible:ring-2 focus-visible:ring-cream/40 focus-visible:ring-offset-2 focus-visible:ring-offset-night md:hover:-translate-y-[2px] md:hover:border-white/[0.14] md:hover:shadow-[0_20px_46px_-8px_rgba(0,0,0,0.38)]"
+          >
+            <div class="portfolio-card-media relative aspect-video w-full shrink-0 overflow-hidden bg-black">
+              <video
+                class="portfolio-card-video absolute inset-0 h-full w-full origin-center object-cover object-center opacity-100 transition-transform duration-500 group-hover:scale-105"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                aria-label="Démonstration vidéo hub culinaire"
+              >
+                <source src="videos/recettes_communaute.mp4" type="video/mp4" />
+              </video>
+            </div>
+            <div class="flex flex-1 flex-col gap-3 border-t border-white/[0.08] px-4 py-5 md:px-5 md:py-6">
+              <h3 class="text-base font-normal leading-snug text-cream md:text-lg">Hub collaboratif &amp; partage culinaire</h3>
+              <p class="text-[0.8125rem] font-light leading-relaxed text-creamMuted md:text-[0.875rem]">
+                Développement d'une plateforme communautaire dynamique axée sur l'interactivité et le partage de médias.
+              </p>
+              <div class="mt-auto flex flex-wrap gap-2 pt-1">
+                <span class="tech-badge tech-badge--back">API REST</span>
+                <span class="tech-badge tech-badge--front">State Management</span>
+                <span class="tech-badge tech-badge--design">Modern Front-end</span>
+              </div>
+            </div>
+          </article> -->
+
+          <!-- <article
+            tabindex="0"
+            class="portfolio-card reveal group relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.1] bg-white/[0.04] shadow-[0_6px_28px_rgba(0,0,0,0.18)] backdrop-blur-xl outline-none transition-[box-shadow,border-color,transform] duration-300 ease-out focus-visible:ring-2 focus-visible:ring-cream/40 focus-visible:ring-offset-2 focus-visible:ring-offset-night md:hover:-translate-y-[2px] md:hover:border-white/[0.14] md:hover:shadow-[0_20px_46px_-8px_rgba(0,0,0,0.38)]"
+          >
+            <div class="portfolio-card-media relative aspect-video w-full shrink-0 overflow-hidden bg-black">
+              <video
+                class="portfolio-card-video absolute inset-0 h-full w-full origin-center object-cover object-center opacity-100 transition-transform duration-500 group-hover:scale-105"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                aria-label="Démonstration vidéo cabinet innovation"
+              >
+                <source src="videos/innovation_ia.mp4" type="video/mp4" />
+              </video>
+            </div>
+            <div class="flex flex-1 flex-col gap-3 border-t border-white/[0.08] px-4 py-5 md:px-5 md:py-6">
+              <h3 class="text-base font-normal leading-snug text-cream md:text-lg">
+                Cabinet d'ingénierie &amp; innovation digitale
+              </h3>
+              <p class="text-[0.8125rem] font-light leading-relaxed text-creamMuted md:text-[0.875rem]">
+                Interface technologique pour un bureau d'études spécialisé en IA et IoT. Design axé sur la confiance et la
+                sécurité.
+              </p>
+              <div class="mt-auto flex flex-wrap gap-2 pt-1">
+                <span class="tech-badge tech-badge--front">JS Modern</span>
+                <span class="tech-badge tech-badge--tool">API Integration</span>
+                <span class="tech-badge tech-badge--design">UX/UI Trust &amp; Tech</span>
+              </div>
+            </div>
+          </article> -->
+
+          <!-- <article
+            tabindex="0"
+            class="portfolio-card reveal group relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.1] bg-white/[0.04] shadow-[0_6px_28px_rgba(0,0,0,0.18)] backdrop-blur-xl outline-none transition-[box-shadow,border-color,transform] duration-300 ease-out focus-visible:ring-2 focus-visible:ring-cream/40 focus-visible:ring-offset-2 focus-visible:ring-offset-night md:hover:-translate-y-[2px] md:hover:border-white/[0.14] md:hover:shadow-[0_20px_46px_-8px_rgba(0,0,0,0.38)]"
+          >
+            <div class="portfolio-card-media relative aspect-video w-full shrink-0 overflow-hidden bg-black">
+              <video
+                class="portfolio-card-video absolute inset-0 h-full w-full origin-center object-cover object-center opacity-100 transition-transform duration-500 group-hover:scale-105"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                aria-label="Démonstration vidéo écosystème sportif"
+              >
+                <source src="videos/padel_matchmaking.mp4" type="video/mp4" />
+              </video>
+            </div>
+            <div class="flex flex-1 flex-col gap-3 border-t border-white/[0.08] px-4 py-5 md:px-5 md:py-6">
+              <h3 class="text-base font-normal leading-snug text-cream md:text-lg">Écosystème sportif &amp; matchmaking</h3>
+              <p class="text-[0.8125rem] font-light leading-relaxed text-creamMuted md:text-[0.875rem]">
+                Plateforme SaaS complète pour clubs sportifs incluant système de réservation et algorithme de classement.
+              </p>
+              <div class="mt-auto flex flex-wrap gap-2 pt-1">
+                <span class="tech-badge tech-badge--front">Animations 60fps</span>
+                <span class="tech-badge tech-badge--opti">Mobile-First</span>
+                <span class="tech-badge tech-badge--design">Performance Web</span>
+              </div>
+            </div>
+          </article> -->
         </div>
       </section>
 

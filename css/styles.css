@@ -288,4 +288,9 @@ body.nav-open .burger-line-bot {
     transform: none;
     transition: none;
   }
+
+  .portfolio-card .portfolio-card-video {
+    transition: none !important;
+    transform: none !important;
+  }
 }
