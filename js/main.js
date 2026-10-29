@@ -160,9 +160,183 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
+  function initContactForm() {
+    var form = document.getElementById("contact-form");
+    var submitBtn = document.getElementById("contact-submit");
+    var statusEl = document.getElementById("form-status");
+    var toast = document.getElementById("contact-toast");
+    if (!form || !submitBtn) return;
+
+    var idleEl = submitBtn.querySelector(".submit-idle");
+    var loadingEl = submitBtn.querySelector(".submit-loading");
+    var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    var toastTimer;
+    var toastHideTimer;
+
+    function field(name) {
+      return form.elements[name];
+    }
+
+    function errorEl(name) {
+      return form.querySelector('[data-error-for="' + name + '"]');
+    }
+
+    function setFieldError(name, message) {
+      var input = field(name);
+      var hint = errorEl(name);
+      if (input) {
+        if (message) {
+          input.classList.add("is-invalid");
+        } else {
+          input.classList.remove("is-invalid");
+        }
+      }
+      if (hint) {
+        hint.textContent = message || "";
+        hint.classList.toggle("hidden", !message);
+      }
+    }
+
+    function clearErrors() {
+      ["nom", "email", "sujet", "message"].forEach(function (name) {
+        setFieldError(name, "");
+      });
+      if (statusEl) {
+        statusEl.textContent = "";
+        statusEl.classList.add("hidden");
+        statusEl.classList.remove("text-red-300", "text-emerald-300");
+      }
+    }
+
+    function setLoading(isLoading) {
+      submitBtn.disabled = isLoading;
+      if (idleEl) idleEl.classList.toggle("hidden", isLoading);
+      if (loadingEl) {
+        loadingEl.classList.toggle("hidden", !isLoading);
+        loadingEl.classList.toggle("inline-flex", isLoading);
+      }
+    }
+
+    function hideToast() {
+      if (!toast) return;
+      toast.classList.remove("is-visible");
+      toastHideTimer = setTimeout(function () {
+        toast.hidden = true;
+      }, 280);
+    }
+
+    function showToast(message, isError) {
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.toggle("contact-toast--error", Boolean(isError));
+      toast.hidden = false;
+      window.requestAnimationFrame(function () {
+        toast.classList.add("is-visible");
+      });
+      clearTimeout(toastTimer);
+      clearTimeout(toastHideTimer);
+      toastTimer = setTimeout(hideToast, 4200);
+    }
+
+    function validate() {
+      var nom = String(field("nom").value || "").trim();
+      var email = String(field("email").value || "").trim();
+      var sujet = String(field("sujet").value || "").trim();
+      var message = String(field("message").value || "").trim();
+      var ok = true;
+
+      if (nom.length < 2) {
+        setFieldError("nom", "Indiquez votre nom.");
+        ok = false;
+      } else {
+        setFieldError("nom", "");
+      }
+
+      if (!emailRe.test(email)) {
+        setFieldError("email", "Indiquez une adresse e-mail valide.");
+        ok = false;
+      } else {
+        setFieldError("email", "");
+      }
+
+      if (sujet.length < 2) {
+        setFieldError("sujet", "Indiquez un sujet.");
+        ok = false;
+      } else {
+        setFieldError("sujet", "");
+      }
+
+      if (message.length < 10) {
+        setFieldError("message", "Quelques lignes suffisent — au moins 10 caractères.");
+        ok = false;
+      } else {
+        setFieldError("message", "");
+      }
+
+      return ok
+        ? { nom: nom, email: email, sujet: sujet, message: message, website: String(field("website").value || "") }
+        : null;
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      clearErrors();
+      var payload = validate();
+      if (!payload) return;
+
+      setLoading(true);
+
+      fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload),
+      })
+        .then(function (response) {
+          return response.json().then(function (data) {
+            return { ok: response.ok, data: data };
+          });
+        })
+        .then(function (result) {
+          if (result.ok && result.data && result.data.success) {
+            form.reset();
+            clearErrors();
+            if (statusEl) {
+              statusEl.textContent = "Message envoyé. Je vous réponds dès que possible.";
+              statusEl.classList.remove("hidden", "text-red-300");
+              statusEl.classList.add("text-emerald-300");
+            }
+            showToast("Message envoyé. Merci.", false);
+            return;
+          }
+          var err =
+            (result.data && result.data.error) ||
+            "Impossible d'envoyer le message. Réessayez plus tard.";
+          if (statusEl) {
+            statusEl.textContent = err;
+            statusEl.classList.remove("hidden", "text-emerald-300");
+            statusEl.classList.add("text-red-300");
+          }
+          showToast(err, true);
+        })
+        .catch(function () {
+          var err = "Connexion impossible. Vérifiez votre réseau et réessayez.";
+          if (statusEl) {
+            statusEl.textContent = err;
+            statusEl.classList.remove("hidden", "text-emerald-300");
+            statusEl.classList.add("text-red-300");
+          }
+          showToast(err, true);
+        })
+        .then(function () {
+          setLoading(false);
+        });
+    });
+  }
+
   initReveal();
   initSmoothAnchors();
   initMobileNav();
+  initContactForm();
 
   var style = document.createElement("style");
   style.textContent =

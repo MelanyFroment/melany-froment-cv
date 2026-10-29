@@ -230,6 +230,57 @@ body.nav-open .burger-line-bot {
   }
 }
 
+/* Honeypot anti-spam : invisible pour les humains, lu par les bots */
+.hp-field {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Toast de confirmation / erreur */
+.contact-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  z-index: 80;
+  max-width: calc(100% - 2rem);
+  padding: 0.75rem 1.25rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f7f3ec;
+  background: rgba(26, 37, 51, 0.94);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  border-radius: 9999px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transform: translate(-50%, 0.75rem);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.contact-toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.contact-toast--error {
+  border-color: rgba(248, 113, 113, 0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-toast {
+    transition: none;
+  }
+}
+
 /* Champs formulaire cohérents avec le thème sombre */
 .form-input {
   width: 100%;
@@ -251,6 +302,32 @@ body.nav-open .burger-line-bot {
 .form-input:focus {
   border-color: rgba(247, 243, 236, 0.35);
   box-shadow: 0 0 0 1px rgba(247, 243, 236, 0.12);
+}
+
+.form-input.is-invalid {
+  border-color: rgba(248, 113, 113, 0.55);
+}
+
+.form-error {
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+  color: rgba(252, 165, 165, 0.95);
+}
+
+.btn-spinner {
+  animation: btn-spin 0.75s linear infinite;
+}
+
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-spinner {
+    animation: none;
+  }
 }
 
 /* État initial : invisible, légèrement décalé vers le bas */
