@@ -280,6 +280,22 @@ body.nav-open .burger-line-bot {
 #hero .reveal:nth-child(4) {
   transition-delay: 0.24s;
 }
+#hero .reveal:nth-child(5) {
+  transition-delay: 0.32s;
+}
+
+/* Puce de disponibilité (hero) */
+.status-dot-ping {
+  animation: status-dot-pulse 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes status-dot-pulse {
+  75%,
+  100% {
+    transform: scale(2.15);
+    opacity: 0;
+  }
+}
 
 /* Réduction des animations si l'utilisateur le demande */
 @media (prefers-reduced-motion: reduce) {
@@ -292,5 +308,10 @@ body.nav-open .burger-line-bot {
   .portfolio-card .portfolio-card-video {
     transition: none !important;
     transform: none !important;
+  }
+
+  .status-dot-ping {
+    animation: none;
+    opacity: 0.45;
   }
 }
