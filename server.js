@@ -1,26 +1,26 @@
 "use strict";
 
-require("dotenv").config();
-
 const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
 
+require("dotenv").config({ path: path.join(__dirname, ".env") });
+
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 const ROOT = __dirname;
 
-const SMTP_USER = process.env.SMTP_USER || "";
-const SMTP_PASS = process.env.SMTP_PASS || "";
-const SMTP_HOST = process.env.SMTP_HOST || "smtp.mail.yahoo.com";
+const SMTP_USER = String(process.env.SMTP_USER || "").trim();
+const SMTP_PASS = String(process.env.SMTP_PASS || "").replace(/\s+/g, "");
+const SMTP_HOST = String(process.env.SMTP_HOST || "smtp.mail.yahoo.com").trim();
 const SMTP_PORT = Number(process.env.SMTP_PORT) || 465;
 const SMTP_SECURE = process.env.SMTP_SECURE !== "false";
-const CONTACT_TO = process.env.CONTACT_TO || "melany.from@yahoo.com";
+const CONTACT_TO = String(process.env.CONTACT_TO || "melany.from@yahoo.com").trim();
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const RATE_WINDOW_MS = 15 * 60 * 1000;
-const RATE_MAX = 5;
+const RATE_MAX = 8;
 const rateHits = new Map();
 
 const BLOCKED_PATHS = new Set([
@@ -63,11 +63,15 @@ function allowRequest(ip) {
   return true;
 }
 
-function createTransporter() {
+function createTransporter(overrides) {
+  const options = overrides || {};
+  const port = Number(options.port || SMTP_PORT);
+  const secure = options.secure != null ? options.secure : SMTP_SECURE && port === 465;
   return nodemailer.createTransport({
     host: SMTP_HOST,
-    port: SMTP_PORT,
-    secure: SMTP_SECURE,
+    port: port,
+    secure: secure,
+    requireTLS: port === 587,
     auth: {
       user: SMTP_USER,
       pass: SMTP_PASS,
@@ -75,18 +79,61 @@ function createTransporter() {
   });
 }
 
-const corsOrigins = (process.env.CORS_ORIGIN || "")
-  .split(",")
-  .map(function (origin) {
-    return origin.trim();
-  })
-  .filter(Boolean);
+function buildMailOptions(nom, email, sujet, message) {
+  return {
+    from: '"' + nom.replace(/"/g, "") + '" <' + SMTP_USER + ">",
+    to: CONTACT_TO,
+    replyTo: email,
+    subject: "[Portfolio] " + sujet,
+    text:
+      "Nouveau message depuis le portfolio\n\n" +
+      "Nom : " +
+      nom +
+      "\nE-mail : " +
+      email +
+      "\nSujet : " +
+      sujet +
+      "\n\n" +
+      message,
+    html:
+      "<p>Nouveau message depuis le portfolio</p>" +
+      "<p><strong>Nom :</strong> " +
+      escapeHtml(nom) +
+      "<br><strong>E-mail :</strong> " +
+      escapeHtml(email) +
+      "<br><strong>Sujet :</strong> " +
+      escapeHtml(sujet) +
+      "</p>" +
+      "<p>" +
+      escapeHtml(message).replace(/\n/g, "<br>") +
+      "</p>",
+  };
+}
 
+async function sendContactMail(mailOptions) {
+  try {
+    const primary = createTransporter();
+    await primary.sendMail(mailOptions);
+    return;
+  } catch (primaryErr) {
+    console.error("[smtp] échec port", SMTP_PORT, primaryErr);
+    if (SMTP_PORT === 465) {
+      console.error("[smtp] tentative de repli STARTTLS port 587");
+      const fallback = createTransporter({ port: 587, secure: false });
+      await fallback.sendMail(mailOptions);
+      return;
+    }
+    throw primaryErr;
+  }
+}
+
+app.set("trust proxy", 1);
 app.disable("x-powered-by");
 app.use(
   cors({
-    origin: corsOrigins.length ? corsOrigins : true,
-    methods: ["POST", "OPTIONS"],
+    origin: true,
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Accept"],
   })
 );
 app.use(express.json({ limit: "32kb" }));
@@ -103,6 +150,13 @@ app.use(function (req, res, next) {
     return res.status(404).end();
   }
   next();
+});
+
+app.get("/api/health", function (req, res) {
+  res.json({
+    ok: true,
+    smtpConfigured: Boolean(SMTP_USER && SMTP_PASS),
+  });
 });
 
 app.post("/api/contact", async function (req, res) {
@@ -141,52 +195,31 @@ app.post("/api/contact", async function (req, res) {
   }
 
   if (!SMTP_USER || !SMTP_PASS) {
-    console.error("SMTP_USER ou SMTP_PASS manquant.");
+    console.error("[smtp] SMTP_USER ou SMTP_PASS manquant. Vérifiez le fichier .env ou les variables Render.");
     return res.status(500).json({
       success: false,
-      error: "L'envoi est temporairement indisponible.",
+      error: "L'envoi est temporairement indisponible (SMTP non configuré).",
     });
   }
 
   try {
-    const transporter = createTransporter();
-    await transporter.sendMail({
-      from: '"' + nom.replace(/"/g, "") + '" <' + SMTP_USER + ">",
-      to: CONTACT_TO,
-      replyTo: email,
-      subject: "[Portfolio] " + sujet,
-      text:
-        "Nouveau message depuis le portfolio\n\n" +
-        "Nom : " +
-        nom +
-        "\nE-mail : " +
-        email +
-        "\nSujet : " +
-        sujet +
-        "\n\n" +
-        message,
-      html:
-        "<p>Nouveau message depuis le portfolio</p>" +
-        "<p><strong>Nom :</strong> " +
-        escapeHtml(nom) +
-        "<br><strong>E-mail :</strong> " +
-        escapeHtml(email) +
-        "<br><strong>Sujet :</strong> " +
-        escapeHtml(sujet) +
-        "</p>" +
-        "<p>" +
-        escapeHtml(message).replace(/\n/g, "<br>") +
-        "</p>",
-    });
-
+    await sendContactMail(buildMailOptions(nom, email, sujet, message));
     return res.json({ success: true });
   } catch (err) {
-    console.error("Envoi du message impossible:", err && err.message);
+    console.error("[smtp] envoi impossible:", err);
     return res.status(500).json({
       success: false,
       error: "Impossible d'envoyer le message. Réessayez plus tard.",
     });
   }
+});
+
+app.use("/api", function (req, res) {
+  res.status(404).json({
+    success: false,
+    error: "Route API introuvable.",
+    path: req.path,
+  });
 });
 
 app.use(
@@ -196,6 +229,19 @@ app.use(
   })
 );
 
+app.use(function (err, req, res, next) {
+  console.error("[server]", err);
+  if (res.headersSent) {
+    return next(err);
+  }
+  const isJsonError = err.type === "entity.parse.failed";
+  res.status(isJsonError ? 400 : err.status || 500).json({
+    success: false,
+    error: isJsonError ? "Requête invalide." : "Erreur serveur.",
+  });
+});
+
 app.listen(PORT, function () {
   console.log("Serveur démarré sur le port " + PORT);
+  console.log("[smtp] host=%s port=%s user=%s configured=%s", SMTP_HOST, SMTP_PORT, SMTP_USER || "(vide)", Boolean(SMTP_USER && SMTP_PASS));
 });
