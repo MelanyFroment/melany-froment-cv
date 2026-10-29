@@ -8,7 +8,7 @@ const nodemailer = require("nodemailer");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 const app = express();
-const PORT = Number(process.env.PORT) || 3000;
+const PORT = process.env.PORT || 3000;
 const ROOT = __dirname;
 
 const SMTP_USER = String(process.env.SMTP_USER || "").trim();
@@ -46,6 +46,11 @@ function clientIp(req) {
     return forwarded.split(",")[0].trim();
   }
   return req.socket.remoteAddress || "unknown";
+}
+
+function sendJson(res, status, payload) {
+  res.set("Content-Type", "application/json; charset=utf-8");
+  return res.status(status).json(payload);
 }
 
 function allowRequest(ip) {
@@ -161,7 +166,7 @@ app.get("/api/health", function (req, res) {
 
 app.post("/api/contact", async function (req, res) {
   if (!allowRequest(clientIp(req))) {
-    return res.status(429).json({
+    return sendJson(res, 429, {
       success: false,
       error: "Trop de tentatives. Réessayez dans quelques minutes.",
     });
@@ -170,7 +175,10 @@ app.post("/api/contact", async function (req, res) {
   const body = req.body || {};
   const honeypot = String(body.website || "").trim();
   if (honeypot) {
-    return res.json({ success: true });
+    return sendJson(res, 200, {
+      success: true,
+      message: "Message envoyé avec succès !",
+    });
   }
 
   const nom = String(body.nom || "").trim();
@@ -179,16 +187,16 @@ app.post("/api/contact", async function (req, res) {
   const message = String(body.message || "").trim();
 
   if (nom.length < 2 || nom.length > 100) {
-    return res.status(400).json({ success: false, error: "Indiquez un nom valide." });
+    return sendJson(res, 400, { success: false, error: "Indiquez un nom valide." });
   }
   if (!EMAIL_RE.test(email) || email.length > 254) {
-    return res.status(400).json({ success: false, error: "Indiquez une adresse e-mail valide." });
+    return sendJson(res, 400, { success: false, error: "Indiquez une adresse e-mail valide." });
   }
   if (sujet.length < 2 || sujet.length > 150) {
-    return res.status(400).json({ success: false, error: "Indiquez un sujet." });
+    return sendJson(res, 400, { success: false, error: "Indiquez un sujet." });
   }
   if (message.length < 10 || message.length > 4000) {
-    return res.status(400).json({
+    return sendJson(res, 400, {
       success: false,
       error: "Le message doit contenir entre 10 et 4000 caractères.",
     });
@@ -196,7 +204,7 @@ app.post("/api/contact", async function (req, res) {
 
   if (!SMTP_USER || !SMTP_PASS) {
     console.error("[smtp] SMTP_USER ou SMTP_PASS manquant. Vérifiez le fichier .env ou les variables Render.");
-    return res.status(500).json({
+    return sendJson(res, 500, {
       success: false,
       error: "L'envoi est temporairement indisponible (SMTP non configuré).",
     });
@@ -204,10 +212,13 @@ app.post("/api/contact", async function (req, res) {
 
   try {
     await sendContactMail(buildMailOptions(nom, email, sujet, message));
-    return res.json({ success: true });
+    return sendJson(res, 200, {
+      success: true,
+      message: "Message envoyé avec succès !",
+    });
   } catch (err) {
     console.error("[smtp] envoi impossible:", err);
-    return res.status(500).json({
+    return sendJson(res, 500, {
       success: false,
       error: "Impossible d'envoyer le message. Réessayez plus tard.",
     });
@@ -241,7 +252,20 @@ app.use(function (err, req, res, next) {
   });
 });
 
-app.listen(PORT, function () {
-  console.log("Serveur démarré sur le port " + PORT);
+const server = app.listen(PORT, function () {
+  console.log("Serveur démarré sur http://localhost:" + PORT);
   console.log("[smtp] host=%s port=%s user=%s configured=%s", SMTP_HOST, SMTP_PORT, SMTP_USER || "(vide)", Boolean(SMTP_USER && SMTP_PASS));
+});
+
+server.on("error", function (err) {
+  if (err.code === "EADDRINUSE") {
+    var nextPort = Number(PORT) + 1;
+    console.log("Le port " + PORT + " est déjà utilisé. Essai sur le port " + nextPort + "...");
+    app.listen(nextPort, function () {
+      console.log("Serveur démarré sur http://localhost:" + nextPort);
+      console.log("[smtp] host=%s port=%s user=%s configured=%s", SMTP_HOST, SMTP_PORT, SMTP_USER || "(vide)", Boolean(SMTP_USER && SMTP_PASS));
+    });
+  } else {
+    console.error("[server] impossible de démarrer:", err);
+  }
 });

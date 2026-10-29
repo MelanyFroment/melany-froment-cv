@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "build:css": "tailwindcss -i ./css/tailwind-input.css -o ./css/tailwind.css --minify"
   },
   "engines": {
     "node": ">=18"
@@ -15,5 +16,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "nodemailer": "^10.3.1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
   }
 }

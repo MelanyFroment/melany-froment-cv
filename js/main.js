@@ -305,7 +305,7 @@
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify(payload),
       });
-      var data = await parseResponse(response);
+      var data = await readJsonSafe(response);
       return { response: response, data: data };
     }
 
@@ -318,31 +318,34 @@
       showToast(message, true);
     }
 
-    function showFormSuccess() {
+    function showFormSuccess(message) {
+      var text = message || "Message envoyé ! Je vous réponds dès que possible.";
       form.reset();
       clearErrors();
       if (statusEl) {
-        statusEl.textContent = "Message envoyé. Je vous réponds dès que possible.";
+        statusEl.textContent = text;
         statusEl.classList.remove("hidden", "text-red-300");
         statusEl.classList.add("text-emerald-300");
       }
-      showToast("Message envoyé. Merci.", false);
+      showToast(text, false);
     }
 
-    async function parseResponse(response) {
-      var raw = await response.text();
+    async function readJsonSafe(response) {
       console.log("[contact] HTTP", response.status, response.statusText);
-      console.log("[contact] corps brut:", raw.slice(0, 800));
-      if (!raw) return {};
+      var contentType = (response.headers.get("content-type") || "").toLowerCase();
       try {
+        if (contentType.indexOf("application/json") !== -1) {
+          var json = await response.json();
+          console.log("[contact] JSON", json);
+          return json && typeof json === "object" ? json : {};
+        }
+        var raw = await response.text();
+        console.log("[contact] corps brut:", raw ? raw.slice(0, 800) : "(vide)");
+        if (!raw) return {};
         return JSON.parse(raw);
       } catch (parseErr) {
-        console.error("[contact] la réponse n'est pas du JSON:", parseErr);
-        throw new Error(
-          "L'API /api/contact n'est pas joignable (HTTP " +
-            response.status +
-            "). Lancez le site avec npm start, pas en fichier HTML seul."
-        );
+        console.error("[contact] lecture JSON:", parseErr);
+        return {};
       }
     }
 
@@ -375,9 +378,11 @@
           }
         }
 
-        console.log("[contact] JSON", result.data);
-        if (result.response.ok && result.data && result.data.success) {
-          showFormSuccess();
+        if (result.response.ok) {
+          showFormSuccess(
+            (result.data && result.data.message) ||
+              "Message envoyé ! Je vous réponds dès que possible."
+          );
           return;
         }
 

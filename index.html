@@ -14,26 +14,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Allura&family=Inter:wght@200;300;400;500&display=swap"
     rel="stylesheet" />
 
-  <!-- Tailwind CSS (build rapide, classes utilitaires) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            night: "#1a2533",
-            cream: "#f7f3ec",
-            creamMuted: "rgba(247, 243, 236, 0.72)",
-          },
-          fontFamily: {
-            sans: ["Inter", "system-ui", "sans-serif"],
-            script: ["Allura", "cursive"],
-          },
-        },
-      },
-    };
-  </script>
-
+  <!-- Tailwind CSS compilé (pas de CDN Play en production) -->
+  <link rel="stylesheet" href="css/tailwind.css" />
   <link rel="stylesheet" href="css/styles.css" />
 
   <link rel="apple-touch-icon" sizes="57x57" href="image_favicon/apple-icon-57x57.png">
