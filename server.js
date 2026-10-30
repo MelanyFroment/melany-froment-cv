@@ -64,6 +64,64 @@ function allowRequest(ip) {
   return true;
 }
 
+function buildContactEmailHtml(nom, email, sujet, message) {
+  var safeNom = escapeHtml(nom);
+  var safeEmail = escapeHtml(email);
+  var safeSujet = escapeHtml(sujet);
+  var safeMessage = escapeHtml(message).replace(/\n/g, "<br>");
+
+  return (
+    '<!DOCTYPE html>' +
+    '<html lang="fr">' +
+    '<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+    "<title>Nouveau message</title></head>" +
+    '<body style="margin:0;padding:0;background-color:#f4f5f7;font-family:Inter,Segoe UI,Helvetica,Arial,sans-serif;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f5f7;padding:32px 16px;">' +
+    "<tr><td align=\"center\">" +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background-color:#1e293b;border-radius:12px;overflow:hidden;">' +
+    "<tr><td style=\"padding:28px 32px 12px 32px;\">" +
+    '<p style="margin:0;font-size:12px;letter-spacing:0.22em;text-transform:uppercase;color:#f7f3ec;">MF. CV</p>' +
+    '<p style="margin:6px 0 0 0;font-size:13px;color:#94a3b8;">Mélany Froment</p>' +
+    "</td></tr>" +
+    "<tr><td style=\"padding:8px 32px 24px 32px;\">" +
+    '<h1 style="margin:0;font-size:28px;line-height:1.25;font-weight:500;color:#f8fafc;">Nouveau ' +
+    '<span style="display:inline-block;padding:2px 10px;border-radius:999px;background-color:#22c55e;color:#052e16;font-size:22px;font-weight:600;vertical-align:middle;">message</span></h1>' +
+    '<p style="margin:14px 0 0 0;font-size:15px;line-height:1.6;color:#cbd5e1;">' +
+    safeNom +
+    " vous a envoyé un message depuis votre site internet. Répondez directement à cet e-mail pour lui écrire." +
+    "</p>" +
+    "</td></tr>" +
+    "<tr><td style=\"padding:0 24px 28px 24px;\">" +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#0f172a;border-radius:12px;border:1px solid #334155;">' +
+    "<tr><td style=\"padding:22px 24px;\">" +
+    '<p style="margin:0 0 4px 0;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#64748b;">Nom</p>' +
+    '<p style="margin:0 0 16px 0;font-size:16px;color:#f8fafc;">' +
+    safeNom +
+    "</p>" +
+    '<p style="margin:0 0 4px 0;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#64748b;">Email</p>' +
+    '<p style="margin:0 0 16px 0;font-size:16px;color:#93c5fd;">' +
+    '<a href="mailto:' +
+    safeEmail +
+    '" style="color:#93c5fd;text-decoration:none;">' +
+    safeEmail +
+    "</a></p>" +
+    '<p style="margin:0 0 4px 0;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#64748b;">Sujet</p>' +
+    '<p style="margin:0 0 16px 0;font-size:16px;color:#f8fafc;">' +
+    safeSujet +
+    "</p>" +
+    '<p style="margin:0 0 8px 0;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#64748b;">Message</p>' +
+    '<p style="margin:0;font-size:15px;line-height:1.7;color:#e2e8f0;white-space:pre-wrap;">' +
+    safeMessage +
+    "</p>" +
+    "</td></tr></table>" +
+    "</td></tr>" +
+    "<tr><td style=\"padding:0 32px 28px 32px;\">" +
+    '<p style="margin:0;font-size:12px;color:#64748b;">Envoyé depuis le formulaire de contact du portfolio.</p>' +
+    "</td></tr>" +
+    "</table></td></tr></table></body></html>"
+  );
+}
+
 async function sendViaBrevo(nom, email, sujet, message) {
   const response = await fetch("https://api.brevo.com/v3/smtp/email", {
     method: "POST",
@@ -73,18 +131,11 @@ async function sendViaBrevo(nom, email, sujet, message) {
       "content-type": "application/json",
     },
     body: JSON.stringify({
-      sender: { name: nom, email: CONTACT_FROM },
+      sender: { name: "Site CV Mélany", email: CONTACT_FROM },
       to: [{ email: CONTACT_TO, name: "Mélany Froment" }],
       replyTo: { email: email, name: nom },
       subject: "[Contact CV] " + sujet,
-      htmlContent:
-        "<p><strong>Nom :</strong> " +
-        escapeHtml(nom) +
-        "</p><p><strong>Email :</strong> " +
-        escapeHtml(email) +
-        "</p><p><strong>Message :</strong><br>" +
-        escapeHtml(message).replace(/\n/g, "<br>") +
-        "</p>",
+      htmlContent: buildContactEmailHtml(nom, email, sujet, message),
     }),
   });
 
