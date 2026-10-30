@@ -3,7 +3,6 @@
 const path = require("path");
 const express = require("express");
 const cors = require("cors");
-const nodemailer = require("nodemailer");
 
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 
@@ -11,12 +10,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const ROOT = __dirname;
 
-const SMTP_USER = String(process.env.SMTP_USER || "").trim();
-const SMTP_PASS = String(process.env.SMTP_PASS || "").replace(/\s+/g, "");
-const SMTP_HOST = String(process.env.SMTP_HOST || "smtp.mail.yahoo.com").trim();
-const SMTP_PORT = Number(process.env.SMTP_PORT) || 465;
-const SMTP_SECURE = process.env.SMTP_SECURE !== "false";
+const BREVO_API_KEY = String(process.env.BREVO_API_KEY || "").trim();
 const CONTACT_TO = String(process.env.CONTACT_TO || "melany.from@yahoo.com").trim();
+const CONTACT_FROM = String(process.env.CONTACT_FROM || "melany.from@yahoo.com").trim();
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const RATE_WINDOW_MS = 15 * 60 * 1000;
@@ -68,68 +64,46 @@ function allowRequest(ip) {
   return true;
 }
 
-function createTransporter(overrides) {
-  const options = overrides || {};
-  const port = Number(options.port || SMTP_PORT);
-  const secure = options.secure != null ? options.secure : SMTP_SECURE && port === 465;
-  return nodemailer.createTransport({
-    host: SMTP_HOST,
-    port: port,
-    secure: secure,
-    requireTLS: port === 587,
-    auth: {
-      user: SMTP_USER,
-      pass: SMTP_PASS,
+async function sendViaBrevo(nom, email, sujet, message) {
+  const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      "api-key": BREVO_API_KEY,
+      "content-type": "application/json",
     },
+    body: JSON.stringify({
+      sender: { name: nom, email: CONTACT_FROM },
+      to: [{ email: CONTACT_TO, name: "Mélany Froment" }],
+      replyTo: { email: email, name: nom },
+      subject: "[Contact CV] " + sujet,
+      htmlContent:
+        "<p><strong>Nom :</strong> " +
+        escapeHtml(nom) +
+        "</p><p><strong>Email :</strong> " +
+        escapeHtml(email) +
+        "</p><p><strong>Message :</strong><br>" +
+        escapeHtml(message).replace(/\n/g, "<br>") +
+        "</p>",
+    }),
   });
-}
 
-function buildMailOptions(nom, email, sujet, message) {
-  return {
-    from: '"' + nom.replace(/"/g, "") + '" <' + SMTP_USER + ">",
-    to: CONTACT_TO,
-    replyTo: email,
-    subject: "[Portfolio] " + sujet,
-    text:
-      "Nouveau message depuis le portfolio\n\n" +
-      "Nom : " +
-      nom +
-      "\nE-mail : " +
-      email +
-      "\nSujet : " +
-      sujet +
-      "\n\n" +
-      message,
-    html:
-      "<p>Nouveau message depuis le portfolio</p>" +
-      "<p><strong>Nom :</strong> " +
-      escapeHtml(nom) +
-      "<br><strong>E-mail :</strong> " +
-      escapeHtml(email) +
-      "<br><strong>Sujet :</strong> " +
-      escapeHtml(sujet) +
-      "</p>" +
-      "<p>" +
-      escapeHtml(message).replace(/\n/g, "<br>") +
-      "</p>",
-  };
-}
-
-async function sendContactMail(mailOptions) {
+  var payload = {};
   try {
-    const primary = createTransporter();
-    await primary.sendMail(mailOptions);
-    return;
-  } catch (primaryErr) {
-    console.error("[smtp] échec port", SMTP_PORT, primaryErr);
-    if (SMTP_PORT === 465) {
-      console.error("[smtp] tentative de repli STARTTLS port 587");
-      const fallback = createTransporter({ port: 587, secure: false });
-      await fallback.sendMail(mailOptions);
-      return;
-    }
-    throw primaryErr;
+    payload = await response.json();
+  } catch (parseErr) {
+    payload = {};
   }
+
+  if (!response.ok) {
+    console.error("[brevo] HTTP", response.status, payload);
+    var err = new Error("Brevo a refusé l'envoi.");
+    err.status = response.status;
+    err.details = payload;
+    throw err;
+  }
+
+  return payload;
 }
 
 app.set("trust proxy", 1);
@@ -161,7 +135,7 @@ app.use(function (req, res, next) {
 app.get("/api/health", function (req, res) {
   res.json({
     ok: true,
-    smtpConfigured: Boolean(SMTP_USER && SMTP_PASS),
+    brevoConfigured: Boolean(BREVO_API_KEY),
   });
 });
 
@@ -178,7 +152,7 @@ app.post("/api/contact", async function (req, res) {
   if (honeypot) {
     return sendJson(res, 200, {
       success: true,
-      message: "Message envoyé avec succès !",
+      message: "E-mail envoyé avec succès",
     });
   }
 
@@ -203,22 +177,22 @@ app.post("/api/contact", async function (req, res) {
     });
   }
 
-  if (!SMTP_USER || !SMTP_PASS) {
-    console.error("[smtp] SMTP_USER ou SMTP_PASS manquant. Vérifiez le fichier .env ou les variables Render.");
+  if (!BREVO_API_KEY) {
+    console.error("[brevo] BREVO_API_KEY manquant. Vérifiez le fichier .env ou les variables Render.");
     return sendJson(res, 500, {
       success: false,
-      error: "L'envoi est temporairement indisponible (SMTP non configuré).",
+      error: "L'envoi est temporairement indisponible.",
     });
   }
 
   try {
-    await sendContactMail(buildMailOptions(nom, email, sujet, message));
+    await sendViaBrevo(nom, email, sujet, message);
     return sendJson(res, 200, {
       success: true,
-      message: "Message envoyé avec succès !",
+      message: "E-mail envoyé avec succès",
     });
   } catch (err) {
-    console.error("[smtp] envoi impossible:", err);
+    console.error("[brevo] envoi impossible:", err);
     return sendJson(res, 500, {
       success: false,
       error: "Impossible d'envoyer le message. Réessayez plus tard.",
@@ -255,7 +229,7 @@ app.use(function (err, req, res, next) {
 
 const server = app.listen(PORT, function () {
   console.log("Serveur démarré sur http://localhost:" + PORT);
-  console.log("[smtp] host=%s port=%s user=%s configured=%s", SMTP_HOST, SMTP_PORT, SMTP_USER || "(vide)", Boolean(SMTP_USER && SMTP_PASS));
+  console.log("[brevo] configured=%s", Boolean(BREVO_API_KEY));
 });
 
 server.on("error", function (err) {
@@ -264,7 +238,7 @@ server.on("error", function (err) {
     console.log("Le port " + PORT + " est déjà utilisé. Essai sur le port " + nextPort + "...");
     app.listen(nextPort, function () {
       console.log("Serveur démarré sur http://localhost:" + nextPort);
-      console.log("[smtp] host=%s port=%s user=%s configured=%s", SMTP_HOST, SMTP_PORT, SMTP_USER || "(vide)", Boolean(SMTP_USER && SMTP_PASS));
+      console.log("[brevo] configured=%s", Boolean(BREVO_API_KEY));
     });
   } else {
     console.error("[server] impossible de démarrer:", err);
