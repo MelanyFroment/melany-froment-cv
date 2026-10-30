@@ -278,35 +278,27 @@
         : null;
     }
 
+    var CONTACT_API_PRODUCTION = "https://melany-cv-web.onrender.com/api/contact";
+    var FETCH_TIMEOUT_MS = 60000;
+
     function isLocalHostname() {
       var host = window.location.hostname;
       return !host || host === "localhost" || host === "127.0.0.1" || host === "[::1]";
     }
 
-    function localApiUrl() {
-      var host = window.location.hostname || "localhost";
-      if (host !== "localhost" && host !== "127.0.0.1") host = "localhost";
-      return "http://" + host + ":3000/api/contact";
-    }
-
     function getContactUrl() {
       if (window.CONTACT_API_URL) return String(window.CONTACT_API_URL);
-      if (window.location.protocol === "file:") return localApiUrl();
+      var host = window.location.hostname;
       var port = window.location.port;
-      if (isLocalHostname() && port && port !== "3000") return localApiUrl();
-      return "/api/contact";
-    }
-
-    async function postContact(url, payload) {
-      console.log("[contact] POST", url);
-      var response = await fetch(url, {
-        method: "POST",
-        mode: "cors",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(payload),
-      });
-      var data = await readJsonSafe(response);
-      return { response: response, data: data };
+      if (window.location.protocol === "file:") {
+        return "http://localhost:3000/api/contact";
+      }
+      if (isLocalHostname()) {
+        if (!port || port === "3000") return "/api/contact";
+        return "http://localhost:3000/api/contact";
+      }
+      if (host === "melany-cv-web.onrender.com") return "/api/contact";
+      return CONTACT_API_PRODUCTION;
     }
 
     function showFormError(message) {
@@ -330,25 +322,6 @@
       showToast(text, false);
     }
 
-    async function readJsonSafe(response) {
-      console.log("[contact] HTTP", response.status, response.statusText);
-      var contentType = (response.headers.get("content-type") || "").toLowerCase();
-      try {
-        if (contentType.indexOf("application/json") !== -1) {
-          var json = await response.json();
-          console.log("[contact] JSON", json);
-          return json && typeof json === "object" ? json : {};
-        }
-        var raw = await response.text();
-        console.log("[contact] corps brut:", raw ? raw.slice(0, 800) : "(vide)");
-        if (!raw) return {};
-        return JSON.parse(raw);
-      } catch (parseErr) {
-        console.error("[contact] lecture JSON:", parseErr);
-        return {};
-      }
-    }
-
     form.addEventListener("submit", async function (e) {
       e.preventDefault();
       clearErrors();
@@ -356,51 +329,51 @@
       if (!payload) return;
 
       var url = getContactUrl();
+      var controller = new AbortController();
+      var timeoutId = setTimeout(function () {
+        controller.abort();
+      }, FETCH_TIMEOUT_MS);
+
       setLoading(true);
-      console.log("[contact] payload", {
-        nom: payload.nom,
-        email: payload.email,
-        sujet: payload.sujet,
-        messageLength: payload.message.length,
-      });
+      console.log("[contact] POST", url);
 
       try {
-        var result;
+        var response = await fetch(url, {
+          method: "POST",
+          mode: "cors",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify(payload),
+          signal: controller.signal,
+        });
+
+        var data = {};
         try {
-          result = await postContact(url, payload);
-        } catch (firstErr) {
-          console.error("[contact] 1er essai échoué:", firstErr);
-          if (url !== localApiUrl() && isLocalHostname()) {
-            console.warn("[contact] nouvel essai vers Express local", localApiUrl());
-            result = await postContact(localApiUrl(), payload);
-          } else {
-            throw firstErr;
-          }
+          data = await response.json();
+        } catch (parseErr) {
+          console.error("[contact] JSON illisible:", parseErr);
         }
 
-        if (result.response.ok) {
+        console.log("[contact] HTTP", response.status, data);
+
+        if (response.ok) {
           showFormSuccess(
-            (result.data && result.data.message) ||
-              "Message envoyé ! Je vous réponds dès que possible."
+            (data && data.message) || "Message envoyé ! Je vous réponds dès que possible."
           );
-          return;
+        } else {
+          showFormError(
+            (data && data.error) || "Impossible d'envoyer le message. Réessayez plus tard."
+          );
         }
-
-        showFormError(
-          (result.data && result.data.error) || "Impossible d'envoyer le message. Réessayez plus tard."
-        );
       } catch (err) {
-        console.error("[contact] échec réseau ou parsing:", err);
-        var message =
-          err && err.message
-            ? err.message
-            : "Connexion impossible. Vérifiez que le serveur Node tourne (npm start).";
-        if (err && err.name === "TypeError") {
+        console.error("[contact] échec:", err);
+        var message = "Connexion impossible. Réessayez dans un instant.";
+        if (err && err.name === "AbortError") {
           message =
-            "Connexion impossible vers l'API. Dans un terminal, lancez npm start puis ouvrez http://localhost:3000";
+            "Le serveur met trop de temps à répondre (réveil Render). Réessayez dans une minute.";
         }
         showFormError(message);
       } finally {
+        clearTimeout(timeoutId);
         setLoading(false);
       }
     });

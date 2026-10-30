@@ -139,6 +139,7 @@ app.use(
     origin: true,
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Accept"],
+    optionsSuccessStatus: 204,
   })
 );
 app.use(express.json({ limit: "32kb" }));
